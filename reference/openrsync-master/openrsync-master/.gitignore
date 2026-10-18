@@ -1,0 +1,15 @@
+Makefile.configure
+Makefile.local
+config.h
+config.h.old
+config.log
+config.log.old
+*.o
+*.swp
+*.gcno
+*.gcda
+*.gcov
+openrsync
+regress/cunit/print_7_or_8_bit
+regress/cunit/log_format_type
+regress/functional/mksparse

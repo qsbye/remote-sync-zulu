@@ -1,0 +1,88 @@
+name: Regression Tests
+on: [push]
+jobs:
+  ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Install dependencies
+      run: sudo apt-get install -y bmake rsync athena-jot ncompress libcunit1 libcunit1-dev
+    - name: Configure
+      run: ./configure
+    - name: Build and test
+      run: bmake regress
+  ubuntu_fsanitize:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Install dependencies
+      run: sudo apt-get install -y bmake rsync athena-jot ncompress libcunit1 libcunit1-dev
+    - name: Configure
+      run: |
+        echo "HAVE_SECCOMP_FILTER=0" > configure.local
+        ./configure
+        echo "CFLAGS += -fsanitize=undefined,address" > Makefile.local
+        echo "LDFLAGS += -fsanitize=undefined,address" >> Makefile.local
+    - name: Build and test
+      run: bmake regress
+  macos_standard:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Install dependencies
+      run: brew install bmake cunit
+    - name: Configure
+      run: ./configure
+    - name: Build and test
+      run: bmake
+  freebsd:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Test in FreeBSD
+      uses: vmactions/freebsd-vm@v1
+      with:
+        usesh: true
+        prepare: pkg install -y cunit
+        run: |
+          ./configure
+          make
+  netbsd:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Test in NetBSD
+      uses: vmactions/netbsd-vm@v1
+      with:
+        usesh: true
+        prepare: pkg_add rsync CUnit
+        run: |
+          ./configure
+          make
+  alpine_x86_64:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Setup Alpine Linux environment for x86_64
+      uses: jirutka/setup-alpine@v1.1.4
+      with:
+        packages: >
+          build-base
+          bmake
+          musl-fts
+          musl-fts-dev
+          zlib-dev
+          outils-jot
+          gzip
+          sharutils
+          rsync
+          cunit
+          cunit-dev
+        shell-name: alpine-x86_64.sh
+    - name: Configure, build, and test on x86_64
+      run: |
+        cat /etc/alpine-release
+        echo "HAVE_FTS=1" > configure.local
+        ./configure
+        bmake
+      shell: alpine-x86_64.sh {0}
