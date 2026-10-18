@@ -88,4 +88,7 @@ Covers RFC 1320 MD4 vectors, rolling-checksum roll/recompute equivalence, the wi
 
 ## License
 
-ISC, matching the openrsync original.
+Dual-licensed:
+
+- New code in this repository (the Java implementation) is licensed under the MIT license — see [LICENSE](LICENSE).
+- RemoteSyncZulu is a faithful translation of [openrsync](https://github.com/kristapsdz/openrsync), which is Copyright (c) 2019 Kristaps Dzonsons and licensed under the ISC license. The original ISC license text is preserved in [LICENSE.openrsync](LICENSE.openrsync) and applies to the parts derived from the openrsync sources.
